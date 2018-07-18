@@ -1,70 +1,65 @@
 Overview
-• In the notes we saw a solution to the produce consumer problem with bounded
-buffers. The solution involved two semaphores (haveData, and haveSpace), plus
-a mutex. In this assignment you will use that solution to manage access to a
-bounded buffer storing candy!
-• One group of threads will model candy factories which generate candy one at a
-time and insert the candy into the bounded buffer. Another group of threads will
-model kids which eat candy one a time1 from the bounded buffer.
+• In the notes we saw a solution to the produce consumer problem with bounded buffers. The solution involved two semaphores, haveData and haveSpace, plus a mutex. In this assignment you will use that solution to manage access to a bounded buffer storing candy!
+• One group of threads will model candy factories which generate candy one at a time and insert the candy into the bounded buffer. Another group of threads will model kids which eat candy one a time from the bounded buffer.
+
 • Your program, called candykids, will accept three arguments:
-• ./candykids <#factories> <#kids> <#seconds>
+• 	./candykids <#factories> <#kids> <#seconds>
 • Example: ./candykids 3 1 10
-• # Factories: Number of candy-factory threads to spawn.
-• # Kids: Number of kid threads to spawn.
-• # Seconds: Number of seconds to allow the factory threads to run for.
+• 	# Factories: Number of candy-factory threads to spawn.
+• 	# Kids: Number of kid threads to spawn.
+• 	# Seconds: Number of seconds to allow the factory threads to run for.
+
+
 Produce/Consumer Operation
 Main
-• Your main() function will start and control the application. Its steps are as 
-follows:
+• Your main() function will start and control the application. Its steps are as follows:
 • main() {
-• // 1. Extract arguments
-• // 2. Initialize modules
-• // 3. Launch candy-factory threads
-• // 4. Launch kid threads
-• // 5. Wait for requested time
-• // 6. Stop candy-factory threads
-• // 7. Wait until no more candy
-• // 8. Stop kid threads
-• // 9. Print statistics
-• // 10. Cleanup any allocated memory
+• 	// 1. Extract arguments
+• 	// 2. Initialize modules
+• 	// 3. Launch candy-factory threads
+• 	// 4. Launch kid threads
+• 	// 5. Wait for requested time
+• 	// 6. Stop candy-factory threads
+• 	// 7. Wait until no more candy
+• 	// 8. Stop kid threads
+• 	// 9. Print statistics
+• 	// 10. Cleanup any allocated memory
 • }
+
 1. Extract Arguments
-As described in the Overview section, process the arguments passed on the
-command line. All arguments must be greater than 0.
-◦ If any argument is 0 or less, display an error and exit the program.
+	As described in the Overview section, process the arguments passed on the command line. All arguments must be greater than 0.
+		◦ If any argument is 0 or less, display an error and exit the program.
+
 2. Initialize Modules
-Do any module initialization. You will have at least two modules: bounded buffer,
-and statistics. If not initialization is required by your implementation, you may
-skip this.
+Do any module initialization. You will have at least two modules: bounded buffer and statistics. If no initialization is required by your implementation, you may skip this.
+
 3. Launch factory threads
-Spawn the requested number of candy-factory threads. To each thread, pass it its
-factory number: 0 to (number of factories - 1).
+Spawn the requested number of candy-factory threads. Assign a factory number to each thread, from 0 to total number of factories -1. 
 Hint: Store the thread IDs in an array because you'll need to join on them later.
-Hint: Don't pass each thread a reference to the same variable because as you
-change the variable's value for the next thread, there's no guaranty the previous
-thread will have read the previous value yet. You can use an array to have a
-different variable for each thread.
+Hint: Don't pass each thread a reference to the same variable because as you change the variable's value for the next thread, there's no guaranty the previous thread will have read the previous value yet. You can use an array to have a different variable for each thread.
+
 4. Launch kid threads
 Spawn the requested number of kid threads.
+
 5. Wait for requested time
-In a loop, call sleep(1). Loop as many times as the “# Seconds” command line
-argument.
-◦ Print the number of seconds running each time, such as “Time 3s” after
+In a loop, call sleep(1). Loop as many times as the “# Seconds” command line argument indicates.
+Print the number of seconds running each time, such as “Time 3s” after
 the 3rd sleep. This shows time ticking away as your program executes.
+
 6. Stop factory threads
-Indicate to the factory threads that they are to finish, and then call join for each
-factory thread. See section on candy-factory threads (below) for more.
+Indicattion to the factory threads that they are to finish, then call join for each factory thread. See section on candy-factory threads (below) for more.
+
 7. Wait until no more candy
-While there is still candy in the bounded buffer (check by calling a method in
-your bounded buffer module), print “Waiting for all candy to be consumed” and
-sleep for 1 second.
+While there is still candy in the bounded buffer, print “Waiting for all candy to be consumed” and sleep the program for 1 second. Call a method in your bounded buffer module to check whether there is still candy in the bounded buffer.
+
 8. Stop kid threads
-For each kid thread, cancel the thread and then join the thread. For example, if a
-thread ID is stored in daThreadID, you would run:
-pthread_cancel(daThreadId);
-pthread_join(daThreadId, NULL);
+Cancel each of the kid thread and join the thread by calling
+	pthread_cancel(daThreadId);
+	pthread_join(daThreadId, NULL);
+where thread ID is stored in daThreadID.
+
 9. Print statistics
 Call the statistics module to display the statistics. See statistics section below.
+
 10. Cleanup any allocated memory
-Free any dynamically allocated memory. You may need to call cleanup functions
-in your statistics and bounded buffer modules if they need to free any memory.
+Free any dynamically allocated memory. You may need to call cleanup functions in your statistics and bounded buffer modules if they need to free any memory.
